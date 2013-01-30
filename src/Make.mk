@@ -14,17 +14,20 @@ COMPILER := g++
 # Targets
 all : FunctionReplacer.o unittest/testsFor_FunctionReplacer.exe unittest/testsFor_FunctionArgLocator.exe
 
-FunctionArgLocator.o : FunctionArgLocator.cpp FunctionArgLocator.h
-	$(COMPILER) $(COMPFLAGS) -c -o FunctionArgLocator.o FunctionArgLocator.cpp
-
-FunctionReplacer.o : FunctionReplacer.cpp FunctionReplacer.h
+FunctionReplacer.o : FunctionArgLocator.o FunctionReplacer.cpp FunctionReplacer.h
 	$(COMPILER) $(COMPFLAGS) -c -o FunctionReplacer.o FunctionReplacer.cpp
+
+FunctionArgLocator.o : CharProcessor.o FunctionArgLocator.cpp FunctionArgLocator.h
+	$(COMPILER) $(COMPFLAGS) -c -o FunctionArgLocator.o FunctionArgLocator.cpp 
+
+CharProcessor.o : CharProcessor.cpp CharProcessor.h
+	$(COMPILER) $(COMPFLAGS) -c -o CharProcessor.o CharProcessor.cpp
 
 unittest/testsFor_FunctionReplacer.exe : FunctionReplacer.o unittest/TestManager.o unittest/testsFor_FunctionReplacer.o
 	$(COMPILER) $(COMPFLAGS) -o unittest/testsFor_FunctionReplacer.exe FunctionReplacer.o unittest/TestManager.o unittest/testsFor_FunctionReplacer.o
 
 unittest/testsFor_FunctionArgLocator.exe : FunctionArgLocator.o unittest/TestManager.o unittest/testsFor_FunctionArgLocator.o
-	$(COMPILER) $(COMPFLAGS) -o unittest/testsFor_FunctionArgLocator.exe FunctionArgLocator.o unittest/TestManager.o unittest/testsFor_FunctionArgLocator.o
+	$(COMPILER) $(COMPFLAGS) -o unittest/testsFor_FunctionArgLocator.exe FunctionArgLocator.o CharProcessor.o unittest/TestManager.o unittest/testsFor_FunctionArgLocator.o
 
 unittest/TestManager.o : unittest/TestManager.cpp unittest/TestManager.h
 	$(COMPILER) $(COMPFLAGS) -c -o unittest/TestManager.o unittest/TestManager.cpp
@@ -37,6 +40,8 @@ unittest/testsFor_FunctionReplacer.o : unittest/testsFor_FunctionReplacer.cpp un
 
 clean :
 	rm FunctionReplacer.o
+	rm FunctionArgLocator.o
+	rm CharProcessor.o
 	rm unittest/TestManager.o
 	rm unittest/testsFor_FunctionReplacer.o
 	rm unittest/testsFor_FunctionReplacer.exe

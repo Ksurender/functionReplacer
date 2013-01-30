@@ -13,18 +13,25 @@ struct argInfo
   std::string arg;
 };
 
-
 class FunctionArgLocator
 {
  public:
   FunctionArgLocator();
   
-  unsigned int feed(std::string toBeProcessed);
+  void feed(const char* toBeProcessed);
+  int needsMore();
+  unsigned int getOpeningBracketPos();
+  unsigned int getClosingBracketPos();
+
+  void getLocatedArgs(std::vector<argInfo> &locatedArgs);
   
+
+
 
  private:
   unsigned int bracketLevel;
   unsigned int currentArg;
+  int fullFunctionProcessed;
   std::vector<argInfo> arguments;
 };
 

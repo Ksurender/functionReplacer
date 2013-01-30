@@ -4,5 +4,6 @@
 #include "TestManager.h"
 
 static void test_instantiate();
+static void test_singleString_noArgs();
 
 #endif
