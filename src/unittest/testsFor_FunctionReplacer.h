@@ -1,8 +1,6 @@
 #ifndef TESTSFOR_FUNCTIONREPLACER_H
 #define TESTSFOR_FUNCTIONREPLACER_H
 
-#include "TestManager.h"
-
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -15,11 +13,6 @@ struct TestDefinition {
   std::string originalCode;
   std::string expectedResultCode;
 };
-
-static void test_instantiate();
-static void test_initializeQueryChangeQuery();
-static void test_doReplaceHarness();
-static int test_doReplace(TestDefinition testDefinition);
 
 // FunctionReplacerSetups used during doReplaceTesting 
 FunctionReplacerSetup funReplacerSetup_1 = {

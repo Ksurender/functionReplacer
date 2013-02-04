@@ -1,71 +1,87 @@
 #include "FunctionArgLocator.h"
-#include "testsFor_FunctionArgLocator.h"
+#include "UnitTest++.h"
 
 #include <string>
 #include <vector>
 
-void test_instantiate()
+struct singleString_noArgs_fixture
 {
-  TestManager testManager("Instantiate");
-  
-  testManager.doStartAction();  
-  try {
-    FunctionArgLocator argLocator;
-    testManager.doPassAction();
-  } 
-  catch(...) {
-    testManager.doFailAction();
+  singleString_noArgs_fixture() {
+    functionString.assign(")");
+    argLocator.feed(functionString.c_str(), 
+		    functionString.c_str() + (functionString.size() - 1));
   }
-}
 
-void test_singleString_noArgs()
-{
-  TestManager testManager("singleString_noArgs");
-  std::string testFunction("myFunction()");
-
-  testManager.doStartAction();
-
+  std::string functionString;
   FunctionArgLocator argLocator;
-  argLocator.feed(testFunction.c_str());
+};
 
-  // Check #1 : Should not need more 
-  if(argLocator.needsMore()) {
-    testManager.doFailAction();
-    return;
-  }
+struct singleString_oneArg_fixture
+{
+  singleString_oneArg_fixture() {};
 
-  // Check #2: Opening bracket position
-  unsigned int openingBracketPos = argLocator.getOpeningBracketPos();
-  if(openingBracketPos != 10) {
-    testManager.doFailAction();
-    return;
-  }
-
-  // Check #3: Closing bracket positions
-  unsigned int closingBracketPos = argLocator.getClosingBracketPos();
-  if(closingBracketPos != 11) {
-    testManager.doFailAction();
-    return;
-  }
-
-  // Check #4: Located arguments
+  std::string functionString;
+  FunctionArgLocator argLocator;
   std::vector<argInfo> locatedArgs;
-  argLocator.getLocatedArgs(locatedArgs);
+};
 
-  if(locatedArgs.size() != 0) {
-    testManager.doFailAction();
-    return;
+SUITE(FunctionArgLocator_TestSuite)
+{
+  TEST_FIXTURE(singleString_noArgs_fixture, singleString_noArgs_shouldNotNeedMore)
+  {
+    CHECK_EQUAL(argLocator.needsMore(), 0);
   }
 
-  testManager.doPassAction();
-}
+  TEST_FIXTURE(singleString_noArgs_fixture, singleString_noArgs_closingBracketPosition)
+  {
+    CHECK_EQUAL(argLocator.getClosingBracketPos(), 0);
+  }
 
+  TEST_FIXTURE(singleString_noArgs_fixture, singleString_noArgs_locatedArguments)
+  {
+    std::vector<argInfo> locatedArgs;
+    argLocator.getLocatedArgs(locatedArgs);
+    CHECK_EQUAL(locatedArgs.size(), 0);
+  }
+
+  TEST_FIXTURE(singleString_oneArg_fixture, singleString_oneArg_basic)
+  {
+    functionString.assign("argN);");
+    const char* pStartChar = functionString.c_str();
+    const char* pEndChar = pStartChar + (functionString.size() - 1);
+    argLocator.feed(pStartChar, pEndChar);
+    argLocator.getLocatedArgs(locatedArgs);
+
+    CHECK_EQUAL(0, argLocator.needsMore());
+    CHECK_EQUAL(4, argLocator.getClosingBracketPos());
+    CHECK_EQUAL(1, locatedArgs.size());
+    
+    CHECK_EQUAL(0, locatedArgs[0].startPos);
+    CHECK_EQUAL(3, locatedArgs[0].endPos);
+    CHECK_EQUAL("argN", locatedArgs[0].arg.c_str());
+  }
+
+  TEST_FIXTURE(singleString_oneArg_fixture, singleString_oneArg_leadTrailSpace)
+  {
+    functionString.assign(" argN );");
+    const char* pStartChar = functionString.c_str();
+    const char* pEndChar = pStartChar + (functionString.size() - 1);
+    argLocator.feed(pStartChar, pEndChar);
+    argLocator.getLocatedArgs(locatedArgs);
+
+    CHECK_EQUAL(0, argLocator.needsMore());
+    CHECK_EQUAL(6, argLocator.getClosingBracketPos());
+    CHECK_EQUAL(1, locatedArgs.size());
+    
+    CHECK_EQUAL(0, locatedArgs[0].startPos);
+    CHECK_EQUAL(5, locatedArgs[0].endPos);
+    CHECK_EQUAL(" argN ", locatedArgs[0].arg.c_str());    
+  }
+}
 
 int main(int argn, char** argv)
 {
-  test_instantiate();
-  test_singleString_noArgs();
-  return 0;
+  return UnitTest::RunAllTests();
 }
 
 

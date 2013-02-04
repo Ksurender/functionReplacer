@@ -1,24 +1,11 @@
 /* testsFor_functionReplacer.cpp */
 #include "FunctionReplacer.h"
 #include "testsFor_FunctionReplacer.h"
+#include "UnitTest++.h"
 
 #include <iostream>
 #include <sstream>
 
-void test_instantiate()
-{
-  TestManager testManager("instantiate");
-  testManager.doStartAction();
-  
-  FunctionReplacerSetup funcReplacerSetup;
-  funcReplacerSetup.originalFunctionName = std::string("origFun"),
-    funcReplacerSetup.originalFunctionNumArgs = 1;
-  funcReplacerSetup.replaceWithSpec = std::string("newFun(@1)");
-  
-  FunctionReplacer funcReplacer(funcReplacerSetup);
-
-  testManager.doPassAction();
-}
 
 static int checkSetupsEqual(FunctionReplacerSetup funcReplacerSetup_1,
 		     FunctionReplacerSetup funcReplacerSetup_2)
@@ -44,50 +31,71 @@ static int checkSetupsEqual(FunctionReplacerSetup funcReplacerSetup_1,
   return 0;
 }
 
-
-void test_initializeQueryChangeQuery()
+struct twoFunctionsFixture
 {
-  TestManager testManager("initQueryChangeQuery");
-  testManager.doStartAction();
-  
-  FunctionReplacerSetup funcReplacerSetup_1, funcReplacerSetup_2;
-  
-  funcReplacerSetup_1.originalFunctionName = std::string("origFun1");
-  funcReplacerSetup_1.originalFunctionNumArgs = 1;
-  funcReplacerSetup_1.replaceWithSpec = std::string("newFun(@1)");
 
-  funcReplacerSetup_2.originalFunctionName = std::string("anotherFun");
-  funcReplacerSetup_2.originalFunctionNumArgs = 3;
-  funcReplacerSetup_2.replaceWithSpec = std::string("bobFun(@3, @1)");
+  twoFunctionsFixture() {
+    funcReplacerSetup_1.originalFunctionName = std::string("origFun1");
+    funcReplacerSetup_1.originalFunctionNumArgs = 1;
+    funcReplacerSetup_1.replaceWithSpec = std::string("newFun(@1)");
 
-  /* Init */
-  FunctionReplacer funReplacer(funcReplacerSetup_1);
+    funcReplacerSetup_2.originalFunctionName = std::string("anotherFun");
+    funcReplacerSetup_2.originalFunctionNumArgs = 3;
+    funcReplacerSetup_2.replaceWithSpec = std::string("bobFun(@3, @1)");
+  }
+  FunctionReplacerSetup funcReplacerSetup_1;
+  FunctionReplacerSetup funcReplacerSetup_2;
+};
 
-  /* Query */
-  int testResult = checkSetupsEqual(funReplacer.getSetup(),
+SUITE(FunctionReplacer_Suite)
+{
+  TEST(Instantiate)
+  {
+    FunctionReplacerSetup funcReplacerSetup;
+    
+    funcReplacerSetup.originalFunctionName = std::string("origFun");
+    funcReplacerSetup.originalFunctionNumArgs = 1;
+    funcReplacerSetup.replaceWithSpec = std::string("newFun(@1)");
+
+    try {
+      FunctionReplacer funcReplacer(funcReplacerSetup);
+      CHECK(true);
+    } 
+    catch(...) {
+      CHECK(false);
+    }
+  }
+
+  TEST_FIXTURE(twoFunctionsFixture, InitQueryChangeQuery)
+  {
+    /* Init */
+    FunctionReplacer funReplacer(funcReplacerSetup_1);
+
+    /* Query */
+    int testResult = checkSetupsEqual(funReplacer.getSetup(),
 				    funcReplacerSetup_1);
-  if(testResult == 1)
-    {
-      testManager.doFailAction();
-      return;
-    }
+    CHECK_EQUAL(testResult, 0);
   
-  /* Change */
-  funReplacer.setSetup(funcReplacerSetup_2);
+    /* Change */
+    funReplacer.setSetup(funcReplacerSetup_2);
   
-  /* Query */
-  testResult = checkSetupsEqual(funReplacer.getSetup(),
-				funcReplacerSetup_2);
+    /* Query */
+    testResult = checkSetupsEqual(funReplacer.getSetup(),
+				  funcReplacerSetup_2);
 
-  if(testResult == 1)
-    {
-      testManager.doFailAction();
-      return;
-    }
-
-  testManager.doPassAction();
+    CHECK_EQUAL(testResult, 0);
+  }
 }
 
+
+int main(int argn, char** argc)
+{
+  return UnitTest::RunAllTests();
+}
+
+
+
+/*
 int test_doReplace(TestDefinition testDefinition)
 {
   FunctionReplacer funcReplacer(testDefinition.functionReplacerSetup);
@@ -126,11 +134,7 @@ void test_doReplaceHarness()
   testManager.doPassAction();
 }
 
-int main(int argn, char** argc)
-{
-  test_instantiate();
-  test_initializeQueryChangeQuery();
-  test_doReplaceHarness();
-}
+*/
+
 
 
