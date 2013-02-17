@@ -2,10 +2,19 @@
 #ifndef FUNCTIONARGLOCATOR_H
 #define FUNCTIONARGLOCATOR_H
 
+#include <exception>
 #include <string>
 #include <vector>
 #include "CharProcessor.h"
 
+class EmptyArgumentException : public std::exception
+{
+ public:
+  virtual const char* what() const throw()
+  {
+    return "Empty argument located";
+  }
+};
 
 struct argInfo
 {
@@ -28,8 +37,9 @@ class FunctionArgLocator
   FunctionArgLocator();
   ~FunctionArgLocator();
   
+  void feed(const char* singleChar);
   void feed(const char* startChar, const char* endChar);
-  int needsMore();
+  bool needsMore();
   unsigned int getClosingBracketPos();
 
   void getLocatedArgs(std::vector<argInfo> &locatedArgs);
@@ -42,7 +52,7 @@ class FunctionArgLocator
   void doOtherType(char theChar);
 
   void storeCurrentArgInfo();
-  void startNewArgInfoAtNextChar();
+  void startNewArgAtNextChar();
 
   void updateCurrentArgInfo(char theChar);
 
@@ -50,9 +60,9 @@ class FunctionArgLocator
   bool hasZeroArgs();
 
   CharProcessor* pCharProcessor;
-  int positionInFullString;
-  int bracketLevel;
-  int fullFunctionProcessed;
+  int currentPositionInFullString;
+  int currentBracketLevel;
+  bool fullFunctionProcessed;
 
   int closingBracketPosition;
   std::vector<argInfo> arguments;

@@ -2,9 +2,9 @@
 
 FunctionArgLocator::FunctionArgLocator():
   pCharProcessor(NULL),
-  positionInFullString(-1),
-  bracketLevel(0),
-  fullFunctionProcessed(0)
+  currentPositionInFullString(-1),
+  currentBracketLevel(0),
+  fullFunctionProcessed(false)
 {
   pCharProcessor = new AsciiValueProcessor;
   currentArgInfo.setAllFields(0, 0, std::string());
@@ -15,22 +15,29 @@ FunctionArgLocator::~FunctionArgLocator()
   delete pCharProcessor;
 }
 
+void FunctionArgLocator::feed(const char* singleChar)
+{
+  processCharacter(*singleChar);
+}
+
 void FunctionArgLocator::feed(const char* startChar, const char* endChar)
 {
 
   for(const char* toBeProcessed = startChar; toBeProcessed <= endChar; 
-      toBeProcessed++) {
-    
-    positionInFullString++;
-
-    if(needsMore() == 1) {
-      processCharacter(*toBeProcessed);
-    }
+      toBeProcessed++) {   
+    processCharacter(*toBeProcessed);
   }
 }
 
 void FunctionArgLocator::processCharacter(char theChar)
 {
+
+  currentPositionInFullString++;
+  
+  if(!needsMore()) {
+    return;
+  }
+
   charType theCharType = pCharProcessor->process(theChar);
   
   switch(theCharType) {
@@ -55,9 +62,9 @@ void FunctionArgLocator::processCharacter(char theChar)
 
 void FunctionArgLocator::doCommaType(char theChar)
 {
-  if(bracketLevel == 0) {
+  if(currentBracketLevel == 0) {
     storeCurrentArgInfo();
-    startNewArgInfoAtNextChar();
+    startNewArgAtNextChar();
     return;
   }
 
@@ -71,29 +78,34 @@ void FunctionArgLocator::doOtherType(char theChar)
 
 void FunctionArgLocator::storeCurrentArgInfo()
 {
+  if(currentArgInfo.arg.empty()) {
+    EmptyArgumentException emptyArgumentException;
+    throw emptyArgumentException;
+  }
+
   arguments.push_back(currentArgInfo);
 }
 
-void FunctionArgLocator::startNewArgInfoAtNextChar()
+void FunctionArgLocator::startNewArgAtNextChar()
 { 
-  currentArgInfo.setAllFields(positionInFullString + 1, 
-			      positionInFullString + 1, std::string());
+  currentArgInfo.setAllFields(currentPositionInFullString + 1, 
+			      currentPositionInFullString + 1, std::string());
 }
 
 void FunctionArgLocator::doOpeningBracketType(char theChar)
 {
-  bracketLevel++;
+  currentBracketLevel++;
   updateCurrentArgInfo(theChar);
 }
 
 void FunctionArgLocator::doClosingBracketType(char theChar)
 {
-  if(bracketLevel == 0) {
+  if(currentBracketLevel == 0) {
     completeProcessing();
     return;
   }
 
-  bracketLevel--;
+  currentBracketLevel--;
   updateCurrentArgInfo(theChar);
 }
 
@@ -103,8 +115,8 @@ void FunctionArgLocator::completeProcessing()
     storeCurrentArgInfo();
   }
 
-  fullFunctionProcessed = 1;
-  closingBracketPosition = positionInFullString;
+  fullFunctionProcessed = true;
+  closingBracketPosition = currentPositionInFullString;
 }
 
 bool FunctionArgLocator::hasZeroArgs()
@@ -128,15 +140,15 @@ bool FunctionArgLocator::hasZeroArgs()
 void FunctionArgLocator::updateCurrentArgInfo(char theChar)
 {
   currentArgInfo.arg.push_back(theChar);
-  currentArgInfo.endPos = positionInFullString;
+  currentArgInfo.endPos = currentPositionInFullString;
 }
 
-int FunctionArgLocator::needsMore()
+bool FunctionArgLocator::needsMore()
 {
   if(fullFunctionProcessed) {
-    return 0;
+    return false;
   }
-  return 1;
+  return true;
 }
 
 unsigned int FunctionArgLocator::getClosingBracketPos()
