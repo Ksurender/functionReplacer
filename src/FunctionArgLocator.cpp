@@ -15,9 +15,9 @@ FunctionArgLocator::~FunctionArgLocator()
   delete pCharProcessor;
 }
 
-void FunctionArgLocator::feed(const char* singleChar)
+void FunctionArgLocator::feed(char singleChar)
 {
-  processCharacter(*singleChar);
+  processCharacter(singleChar);
 }
 
 void FunctionArgLocator::feed(const char* startChar, const char* endChar)

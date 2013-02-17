@@ -37,7 +37,7 @@ class FunctionArgLocator
   FunctionArgLocator();
   ~FunctionArgLocator();
   
-  void feed(const char* singleChar);
+  void feed(char singleChar);
   void feed(const char* startChar, const char* endChar);
   bool needsMore();
   unsigned int getClosingBracketPos();
