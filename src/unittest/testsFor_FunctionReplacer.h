@@ -24,7 +24,7 @@ std::string("replacement()")
 FunctionReplacerSetup funReplacerSetup_2 = {
 std::string("original"),
 1,
-std::string("replacement(@1)")
+std::string("replacement(@1)"),
 };
 
 
@@ -43,7 +43,7 @@ FunctionReplacerSetup funReplacerSetup_4 = {
 FunctionReplacerSetup funReplacerSetup_5 = {
   std::string("original"),
   3,
-  std::string("replacement(@1, @2, @3)")
+  std::string("replacement(@1,@2,@3)")
 };
 
 FunctionReplacerSetup funReplacerSetup_6 = {
@@ -55,7 +55,7 @@ FunctionReplacerSetup funReplacerSetup_6 = {
 FunctionReplacerSetup funReplacerSetup_7 = {
   std::string("original"),
   3,
-  std::string("NS::Replacement(@1)->methodCal(@2)")
+  std::string("NS::Replacement(@1)->methodCall(@2)")
 };
 
 

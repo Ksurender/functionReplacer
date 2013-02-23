@@ -125,7 +125,7 @@ SUITE(FunctionArgLocator_TestSuite)
 
     for(const char* pChar = pStartChar; pChar <= pEndChar; ++pChar) {
       CHECK_EQUAL(true, argLocator.needsMore());
-      argLocator.feed(pChar);
+      argLocator.feed(*pChar);
     }
 
     argLocator.getLocatedArgs(locatedArgs);
@@ -175,7 +175,7 @@ SUITE(FunctionArgLocator_TestSuite)
     
     for(const char* pChar = pStartChar; pChar <= pEndChar; ++pChar) {
       CHECK_EQUAL(true, argLocator.needsMore());
-      argLocator.feed(pChar);
+      argLocator.feed(*pChar);
     }
 
     argLocator.getLocatedArgs(locatedArgs);

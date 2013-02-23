@@ -19,6 +19,7 @@ class TestManager
   void doStartAction();
   void doPassAction();
   void doFailAction();
+  void doFailAction(const char* failMessage);
 
  private:
 
