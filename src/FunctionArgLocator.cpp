@@ -1,18 +1,15 @@
 #include "FunctionArgLocator.h"
 
 FunctionArgLocator::FunctionArgLocator():
-  pCharProcessor(NULL),
   currentPositionInFullString(-1),
   currentBracketLevel(0),
   fullFunctionProcessed(false)
 {
-  pCharProcessor = new AsciiValueProcessor;
   currentArgInfo.setAllFields(0, 0, std::string());
 }
 
 FunctionArgLocator::~FunctionArgLocator()
 {
-  delete pCharProcessor;
 }
 
 void FunctionArgLocator::feed(char singleChar)
@@ -38,7 +35,7 @@ void FunctionArgLocator::processCharacter(char theChar)
     return;
   }
 
-  charType theCharType = pCharProcessor->process(theChar);
+  charType theCharType = charProcessor.process(theChar);
   
   switch(theCharType) {
 
@@ -128,7 +125,7 @@ bool FunctionArgLocator::hasZeroArgs()
   for(std::string::iterator it = currentArgInfo.arg.begin(); 
       it != currentArgInfo.arg.end(); 
       ++it) {   
-    charType cType = pCharProcessor->process(*it);
+    charType cType = charProcessor.process(*it);
     
     if(cType != charType_whitespace) {
       return false;

@@ -59,7 +59,7 @@ class FunctionArgLocator
   void completeProcessing();
   bool hasZeroArgs();
 
-  CharProcessor* pCharProcessor;
+  AsciiValueProcessor charProcessor;
   int currentPositionInFullString;
   int currentBracketLevel;
   bool fullFunctionProcessed;
