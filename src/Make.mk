@@ -7,15 +7,19 @@ LINK_FLAGS := $(foreach dir,$(LIB_DIRS),-L$(dir))
 TEST_LIBS_NAMES := UnitTest++
 TEST_LIBS := $(foreach lib,$(TEST_LIBS_NAMES),-l$(lib))
 
-DEBUG ?= 0
-
 COMPFLAGS := -Wall $(INCLUDE_FLAGS)
+
+DEBUG ?= 0
 ifeq ($(DEBUG),1)
 	COMPFLAGS := $(COMPFLAGS) -g
 endif
 
-COMPILER := g++
+PROFILE ?= 0
+ifeq ($(PROFILE),1)
+	COMPFLAGS := $(COMPFLAGS) -O0 -fprofile-arcs -ftest-coverage
+endif
 
+COMPILER := g++
 
 # Targets
 all : FunctionReplacer.o unittest/testsFor_FunctionReplacer.exe unittest/testsFor_FunctionArgLocator.exe
@@ -30,7 +34,7 @@ CharProcessor.o : CharProcessor.cpp CharProcessor.h
 	$(COMPILER) $(COMPFLAGS) -c -o CharProcessor.o CharProcessor.cpp
 
 unittest/testsFor_FunctionReplacer.exe : FunctionReplacer.o unittest/testsFor_FunctionReplacer.o
-	$(COMPILER) $(COMPFLAGS) $(LINK_FLAGS) -o unittest/testsFor_FunctionReplacer.exe FunctionReplacer.o unittest/testsFor_FunctionReplacer.o $(TEST_LIBS)
+	$(COMPILER) $(COMPFLAGS) $(LINK_FLAGS) -o unittest/testsFor_FunctionReplacer.exe FunctionReplacer.o FunctionArgLocator.o CharProcessor.o unittest/testsFor_FunctionReplacer.o $(TEST_LIBS)
 
 unittest/testsFor_FunctionArgLocator.exe : FunctionArgLocator.o unittest/testsFor_FunctionArgLocator.o
 	$(COMPILER) $(COMPFLAGS) $(LINK_FLAGS) -o unittest/testsFor_FunctionArgLocator.exe FunctionArgLocator.o CharProcessor.o unittest/testsFor_FunctionArgLocator.o $(TEST_LIBS)
