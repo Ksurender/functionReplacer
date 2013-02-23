@@ -153,7 +153,7 @@ unsigned int FunctionArgLocator::getClosingBracketPos() const
   return closingBracketPosition;
 }
 
-void FunctionArgLocator::getLocatedArgs(std::vector<argInfo> &locatedArgs)
+void FunctionArgLocator::getLocatedArgs(std::vector<argInfo> &locatedArgs) const
 {
   locatedArgs = arguments;
 }

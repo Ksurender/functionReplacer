@@ -42,7 +42,7 @@ class FunctionArgLocator
   bool needsMore() const;
   unsigned int getClosingBracketPos() const;
 
-  void getLocatedArgs(std::vector<argInfo> &locatedArgs);
+  void getLocatedArgs(std::vector<argInfo> &locatedArgs) const;
   
  private:
   void processCharacter(char theChar);
