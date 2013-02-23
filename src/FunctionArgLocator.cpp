@@ -140,7 +140,7 @@ void FunctionArgLocator::updateCurrentArgInfo(char theChar)
   currentArgInfo.endPos = currentPositionInFullString;
 }
 
-bool FunctionArgLocator::needsMore()
+bool FunctionArgLocator::needsMore() const
 {
   if(fullFunctionProcessed) {
     return false;
@@ -148,7 +148,7 @@ bool FunctionArgLocator::needsMore()
   return true;
 }
 
-unsigned int FunctionArgLocator::getClosingBracketPos()
+unsigned int FunctionArgLocator::getClosingBracketPos() const
 {
   return closingBracketPosition;
 }

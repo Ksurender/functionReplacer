@@ -39,8 +39,8 @@ class FunctionArgLocator
   
   void feed(char singleChar);
   void feed(const char* startChar, const char* endChar);
-  bool needsMore();
-  unsigned int getClosingBracketPos();
+  bool needsMore() const;
+  unsigned int getClosingBracketPos() const;
 
   void getLocatedArgs(std::vector<argInfo> &locatedArgs);
   
