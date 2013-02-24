@@ -13,7 +13,7 @@ void FunctionReplacer::setSetup(FunctionReplacerSetup newSetup)
   setup = newSetup;
 }
 
-FunctionReplacerSetup FunctionReplacer::getSetup()
+FunctionReplacerSetup FunctionReplacer::getSetup() const
 {
   return setup;
 }
@@ -29,23 +29,23 @@ std::string FunctionReplacer::doReplace(std::string originalCode)
 
 void FunctionReplacer::performReplacements()
 {
-  std::string findThis = setup.originalFunctionName + "(";  
-  size_t searchPosition = 0;
+  std::string functionUsagePrefix = setup.originalFunctionName + "(";  
+  size_t searchStartPosition = 0;
 
-  while(searchPosition != NOMATCHES && 
-	searchPosition < codeBeingProcessed.length()) {
-    size_t usagePosition = codeBeingProcessed.find(findThis, searchPosition);
+  while(searchStartPosition != NOMATCHES && 
+	searchStartPosition < codeBeingProcessed.length()) {
+    size_t usageStartPosition = codeBeingProcessed.find(functionUsagePrefix, searchStartPosition);
     
-    if(usagePosition != NOMATCHES) {
-      processSingleUsage(usagePosition);
-      searchPosition = usagePosition + 1;
+    if(usageStartPosition != NOMATCHES) {
+      processSingleUsage(usageStartPosition);
+      searchStartPosition = usageStartPosition + 1;
     } 
     else {
-      searchPosition = NOMATCHES;
+      searchStartPosition = NOMATCHES;
     }
   }
 
-  if(searchPosition != NOMATCHES) {
+  if(searchStartPosition != NOMATCHES) {
     std::stringstream errorInfoBuilder;
     errorInfoBuilder << "Error when finding and processing usages of "
 		     << setup.originalFunctionName << "." << std::endl;
@@ -55,25 +55,25 @@ void FunctionReplacer::performReplacements()
   }
 }
 
-void FunctionReplacer::processSingleUsage(size_t usagePosition)
+void FunctionReplacer::processSingleUsage(size_t usageStartPosition)
 {
-  FunctionArgLocator argLocator = getArgLocatorForUsage(usagePosition);
+  FunctionArgLocator argLocator = getArgLocatorForUsage(usageStartPosition);
   
   std::vector<argInfo> locatedArgs;
   argLocator.getLocatedArgs(locatedArgs);
   if(locatedArgs.size() == setup.originalFunctionNumArgs) {
-    replaceSingleUsage(argLocator, usagePosition);
+    replaceSingleUsage(argLocator, usageStartPosition);
   }
 }
 
-FunctionArgLocator FunctionReplacer::getArgLocatorForUsage(size_t usagePosition)
+FunctionArgLocator FunctionReplacer::getArgLocatorForUsage(size_t usageStartPosition)
 {
   FunctionArgLocator argLocator;
-  size_t position = usagePosition + setup.originalFunctionName.length() + 1;
+  size_t argsPosition = getPositionAfterOpeningBracket(usageStartPosition);
 
-  while(argLocator.needsMore() && position < codeBeingProcessed.length()) {
-    argLocator.feed(codeBeingProcessed[position]);
-    position++;
+  while(argLocator.needsMore() && argsPosition < codeBeingProcessed.length()) {
+    argLocator.feed(codeBeingProcessed[argsPosition]);
+    argsPosition++;
   }
 
   if(argLocator.needsMore()) {
@@ -88,53 +88,58 @@ FunctionArgLocator FunctionReplacer::getArgLocatorForUsage(size_t usagePosition)
     throw except;
   }
 
-
   return(argLocator);
 }
 
+size_t FunctionReplacer::getPositionAfterOpeningBracket(size_t usageStartPosition)
+{
+  return usageStartPosition + setup.originalFunctionName.length() + 1;
+}
+
+
 void FunctionReplacer::replaceSingleUsage(const FunctionArgLocator &argLocator, 
-				    size_t usagePosition)
+				    size_t usageStartPosition)
 {
   std::vector<argInfo> locatedArgs;
   argLocator.getLocatedArgs(locatedArgs);
   std::string replacementString = buildReplacementString(locatedArgs);
   size_t originalFunctionUsageLength = setup.originalFunctionName.length() + 1 + 
                                        (1 + argLocator.getClosingBracketPos());
-  codeBeingProcessed.replace(usagePosition, originalFunctionUsageLength, replacementString);
+  codeBeingProcessed.replace(usageStartPosition, originalFunctionUsageLength, replacementString);
 }
 
 std::string FunctionReplacer::buildReplacementString(const std::vector<argInfo> &args)
 {
   std::string replacementString(setup.replacementSpec);
 
-  for(unsigned int k = 1; k <= setup.originalFunctionNumArgs; k++) {
+  for(unsigned int argNum = 1; argNum <= setup.originalFunctionNumArgs; argNum++) {
     std::stringstream toBeReplacedBuilder;
-    toBeReplacedBuilder << '@' << k;
+    toBeReplacedBuilder << '@' << argNum;
     std::string toBeReplaced(toBeReplacedBuilder.str());
 
-    findAndReplaceAll(replacementString, toBeReplaced, args[k-1].arg);
+    findAndReplaceAll(replacementString, toBeReplaced, args[argNum-1].arg);
   }
   return(replacementString);
 }
 
 void FunctionReplacer::findAndReplaceAll(std::string &source, const std::string &toBeReplaced, const std::string &replaceWith)
 {
-  size_t searchPosition = 0;
+  size_t searchStartPosition = 0;
 
-  while(searchPosition != NOMATCHES &&
-	searchPosition < source.length()) {
-    size_t usagePosition = source.find(toBeReplaced, searchPosition);
+  while(searchStartPosition != NOMATCHES &&
+	searchStartPosition < source.length()) {
+    size_t usageStartPosition = source.find(toBeReplaced, searchStartPosition);
 
-    if(usagePosition != NOMATCHES) {
-      source.replace(usagePosition, toBeReplaced.length(), replaceWith);
-      searchPosition = usagePosition + 1;
+    if(usageStartPosition != NOMATCHES) {
+      source.replace(usageStartPosition, toBeReplaced.length(), replaceWith);
+      searchStartPosition = usageStartPosition + 1;
     }
     else {
-      searchPosition = NOMATCHES;
+      searchStartPosition = NOMATCHES;
     }
   }
 
-  if(searchPosition != NOMATCHES) {
+  if(searchStartPosition != NOMATCHES) {
     std::stringstream errorInfoBuilder;
     errorInfoBuilder << "Error when finding and replacing all usages of "
 		     << toBeReplaced << "with " << replaceWith << "in "

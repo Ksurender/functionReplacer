@@ -16,19 +16,23 @@ class UnexpectedStringEndReachedException : public std::exception
 {
  public:
 
-  UnexpectedStringEndReachedException() {};
-  UnexpectedStringEndReachedException(std::string info) : additionalInformation(info) {};
+  UnexpectedStringEndReachedException() : message("Unexpectadly reached end of string. ")
+  {
+  }
+
+  UnexpectedStringEndReachedException(std::string additionalInfo) : message("Unexpectadly reached end of string. ") 
+  {
+    message.append(additionalInfo);
+  }
   ~UnexpectedStringEndReachedException() throw(){};
 
   virtual const char* what() const throw()
   {
-    std::string messagePrefix("Unexpectadly reached end of string. ");
-    messagePrefix.append(additionalInformation);
-
-    return messagePrefix.c_str();
+    return message.c_str();
   }
-  private:
-  std::string additionalInformation;
+
+private:
+  std::string message;
 };
 
 struct FunctionReplacerSetup {
@@ -44,7 +48,7 @@ class FunctionReplacer
   FunctionReplacer(FunctionReplacerSetup initialSetup);
   
   void setSetup(FunctionReplacerSetup newSetup);
-  FunctionReplacerSetup getSetup();
+  FunctionReplacerSetup getSetup() const;
 
   std::string doReplace(std::string originalCode);
 
@@ -53,12 +57,12 @@ class FunctionReplacer
   FunctionReplacer() {};
 
   void performReplacements();
-  void processSingleUsage(size_t usagePosition);
+  void processSingleUsage(size_t usageStartPosition);
+  size_t getPositionAfterOpeningBracket(size_t usageStartPosition);
   FunctionArgLocator getArgLocatorForUsage(size_t usagePosition);
   void replaceSingleUsage(const FunctionArgLocator &argLocator, size_t usagePosition);
   std::string buildReplacementString(const std::vector<argInfo> &args);
   void findAndReplaceAll(std::string &source, const std::string &toBeReplaced, const std::string &replaceWith);
-
 		   
   std::string codeBeingProcessed;
   FunctionReplacerSetup setup;
