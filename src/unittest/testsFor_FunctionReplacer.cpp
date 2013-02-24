@@ -192,6 +192,48 @@ SUITE(FunctionReplacer_Suite)
 
     CHECK_THROW(funcReplacer.doReplace(badCode), 
 		UnexpectedStringEndReachedException);
+    
+    std::stringstream errorMessageBuilder;
+    errorMessageBuilder << "Unexpectadly reached end of string. ";
+    errorMessageBuilder << "Error when locating arguments in usage of ";
+    errorMessageBuilder << setup.originalFunctionName;
+    errorMessageBuilder << ".  This may have happened because a usage of the "
+                           "function may exist with an opening bracket and no "
+                           "corresponding closing bracket." << std::endl;
+    std::string errorMessage(errorMessageBuilder.str());
+
+    FunctionReplacer funcReplacer2(setup);
+    try {
+      funcReplacer2.doReplace(badCode);
+      CHECK(0);
+    }
+    catch(UnexpectedStringEndReachedException except) {
+      CHECK_EQUAL(errorMessage.c_str(), except.what()); 
+    }
+  }
+
+  TEST(ExceptionThrownWhenNoClosingBracket_errorMessage)
+  {
+    std::string badCode("unsigned int block = vsort(doStuff + Joseph()");
+    FunctionReplacerSetup setup = {"vsort", 1, "changeIt(@1)"};
+    FunctionReplacer funcReplacer(setup);
+    
+    std::stringstream errorMessageBuilder;
+    errorMessageBuilder << "Unexpectadly reached end of string. ";
+    errorMessageBuilder << "Error when locating arguments in usage of ";
+    errorMessageBuilder << setup.originalFunctionName;
+    errorMessageBuilder << ".  This may have happened because a usage of the "
+                           "function may exist with an opening bracket and no "
+                           "corresponding closing bracket." << std::endl;
+    std::string errorMessage(errorMessageBuilder.str());
+
+    try {
+      funcReplacer.doReplace(badCode);
+      CHECK(0);
+    }
+    catch(UnexpectedStringEndReachedException except) {
+      CHECK_EQUAL(errorMessage.c_str(), except.what()); 
+    }
   }
 }
 
