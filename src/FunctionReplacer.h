@@ -3,10 +3,33 @@
  * call usage in a C++ source file from one usage to 
  * another
  */
+
+#ifndef FUNCTIONREPLACER_H
+#define FUNCTIONREPLACER_H
+
+#include <exception>
 #include <string>
 #include <vector>
 #include "FunctionArgLocator.h"
 
+class UnexpectedStringEndReachedException : public std::exception
+{
+ public:
+
+  UnexpectedStringEndReachedException() {};
+  UnexpectedStringEndReachedException(std::string info) : additionalInformation(info) {};
+  ~UnexpectedStringEndReachedException() throw(){};
+
+  virtual const char* what() const throw()
+  {
+    std::string messagePrefix("Unexpectadly reached end of string. ");
+    messagePrefix.append(additionalInformation);
+
+    return messagePrefix.c_str();
+  }
+  private:
+  std::string additionalInformation;
+};
 
 struct FunctionReplacerSetup {
   std::string originalFunctionName;
@@ -41,3 +64,5 @@ class FunctionReplacer
   FunctionReplacerSetup setup;
 
 };
+
+#endif

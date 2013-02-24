@@ -69,7 +69,18 @@ FunctionArgLocator FunctionReplacer::getArgLocatorForUsage(size_t usagePosition)
     position++;
   }
 
-  // Throw an exception if position reaches end of codeBeingProcessed
+  if(argLocator.needsMore()) {
+    std::stringstream errorInfoBuilder;
+    errorInfoBuilder << "Error when locating arguments in usage of "
+		     << setup.originalFunctionName
+                     << ".  This may have happened because a usage of the "
+                        "function may exist with an opening bracket and no "
+                        "corresponding closing bracket." << std::endl;
+
+    UnexpectedStringEndReachedException except(errorInfoBuilder.str());  
+    throw except;
+  }
+
 
   return(argLocator);
 }
@@ -115,5 +126,14 @@ void FunctionReplacer::findAndReplaceAll(std::string &source, const std::string 
       searchPosition = NOMATCHES;
     }
   }
-  // Throw an exception if position reaches source.length()
+
+  if(searchPosition != NOMATCHES) {
+    std::stringstream errorInfoBuilder;
+    errorInfoBuilder << "Error when finding and replacing all usages of "
+		     << toBeReplaced << "with " << replaceWith << "in "
+                     << source << std::endl;
+      
+    UnexpectedStringEndReachedException except(errorInfoBuilder.str());  
+    throw except;
+  }
 }
