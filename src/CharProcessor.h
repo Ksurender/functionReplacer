@@ -7,8 +7,8 @@
 
 enum charType {
   charType_comma,
-  charType_openingBracket,
-  charType_closingBracket,
+  charType_openingParantheses,
+  charType_closingParantheses,
   charType_whitespace,
   charType_other
 };

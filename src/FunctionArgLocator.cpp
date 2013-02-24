@@ -2,7 +2,7 @@
 
 FunctionArgLocator::FunctionArgLocator():
   currentPositionInFullString(-1),
-  currentBracketLevel(0),
+  currentParanthesesLevel(0),
   fullFunctionProcessed(false)
 {
   currentArgInfo.setAllFields(0, 0, std::string());
@@ -43,12 +43,12 @@ void FunctionArgLocator::processCharacter(char theChar)
     doCommaType(theChar);
     break;
   
-  case charType_openingBracket:
-    doOpeningBracketType(theChar);
+  case charType_openingParantheses:
+    doOpeningParanthesesType(theChar);
     break;
   
-  case charType_closingBracket:
-    doClosingBracketType(theChar);
+  case charType_closingParantheses:
+    doClosingParanthesesType(theChar);
     break;
     
   default:
@@ -59,7 +59,7 @@ void FunctionArgLocator::processCharacter(char theChar)
 
 void FunctionArgLocator::doCommaType(char theChar)
 {
-  if(currentBracketLevel == 0) {
+  if(currentParanthesesLevel == 0) {
     storeCurrentArgInfo();
     startNewArgAtNextChar();
     return;
@@ -89,20 +89,20 @@ void FunctionArgLocator::startNewArgAtNextChar()
 			      currentPositionInFullString + 1, std::string());
 }
 
-void FunctionArgLocator::doOpeningBracketType(char theChar)
+void FunctionArgLocator::doOpeningParanthesesType(char theChar)
 {
-  currentBracketLevel++;
+  currentParanthesesLevel++;
   updateCurrentArgInfo(theChar);
 }
 
-void FunctionArgLocator::doClosingBracketType(char theChar)
+void FunctionArgLocator::doClosingParanthesesType(char theChar)
 {
-  if(currentBracketLevel == 0) {
+  if(currentParanthesesLevel == 0) {
     completeProcessing();
     return;
   }
 
-  currentBracketLevel--;
+  currentParanthesesLevel--;
   updateCurrentArgInfo(theChar);
 }
 
@@ -113,7 +113,7 @@ void FunctionArgLocator::completeProcessing()
   }
 
   fullFunctionProcessed = true;
-  closingBracketPosition = currentPositionInFullString;
+  closingParanthesesPosition = currentPositionInFullString;
 }
 
 bool FunctionArgLocator::hasZeroArgs()
@@ -148,9 +148,9 @@ bool FunctionArgLocator::needsMore() const
   return true;
 }
 
-unsigned int FunctionArgLocator::getClosingBracketPos() const
+unsigned int FunctionArgLocator::getClosingParanthesesPos() const
 {
-  return closingBracketPosition;
+  return closingParanthesesPosition;
 }
 
 void FunctionArgLocator::getLocatedArgs(std::vector<argInfo> &locatedArgs) const

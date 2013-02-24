@@ -69,7 +69,7 @@ void FunctionReplacer::processSingleUsage(size_t usageStartPosition)
 FunctionArgLocator FunctionReplacer::getArgLocatorForUsage(size_t usageStartPosition)
 {
   FunctionArgLocator argLocator;
-  size_t argsPosition = getPositionAfterOpeningBracket(usageStartPosition);
+  size_t argsPosition = getPositionAfterOpeningParantheses(usageStartPosition);
 
   while(argLocator.needsMore() && argsPosition < codeBeingProcessed.length()) {
     argLocator.feed(codeBeingProcessed[argsPosition]);
@@ -81,8 +81,8 @@ FunctionArgLocator FunctionReplacer::getArgLocatorForUsage(size_t usageStartPosi
     errorInfoBuilder << "Error when locating arguments in usage of "
 		     << setup.originalFunctionName
                      << ".  This may have happened because a usage of the "
-                        "function may exist with an opening bracket and no "
-                        "corresponding closing bracket." << std::endl;
+                        "function may exist with an opening parantheses and no "
+                        "corresponding closing parantheses." << std::endl;
 
     UnexpectedStringEndReachedException except(errorInfoBuilder.str());  
     throw except;
@@ -91,7 +91,7 @@ FunctionArgLocator FunctionReplacer::getArgLocatorForUsage(size_t usageStartPosi
   return(argLocator);
 }
 
-size_t FunctionReplacer::getPositionAfterOpeningBracket(size_t usageStartPosition)
+size_t FunctionReplacer::getPositionAfterOpeningParantheses(size_t usageStartPosition)
 {
   return usageStartPosition + setup.originalFunctionName.length() + 1;
 }
@@ -104,7 +104,7 @@ void FunctionReplacer::replaceSingleUsage(const FunctionArgLocator &argLocator,
   argLocator.getLocatedArgs(locatedArgs);
   std::string replacementString = buildReplacementString(locatedArgs);
   size_t originalFunctionUsageLength = setup.originalFunctionName.length() + 1 + 
-                                       (1 + argLocator.getClosingBracketPos());
+                                       (1 + argLocator.getClosingParanthesesPos());
   codeBeingProcessed.replace(usageStartPosition, originalFunctionUsageLength, replacementString);
 }
 

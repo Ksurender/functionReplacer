@@ -40,15 +40,15 @@ class FunctionArgLocator
   void feed(char singleChar);
   void feed(const char* startChar, const char* endChar);
   bool needsMore() const;
-  unsigned int getClosingBracketPos() const;
+  unsigned int getClosingParanthesesPos() const;
 
   void getLocatedArgs(std::vector<argInfo> &locatedArgs) const;
   
  private:
   void processCharacter(char theChar);
   void doCommaType(char theChar);
-  void doOpeningBracketType(char theChar);
-  void doClosingBracketType(char theChar);
+  void doOpeningParanthesesType(char theChar);
+  void doClosingParanthesesType(char theChar);
   void doOtherType(char theChar);
 
   void storeCurrentArgInfo();
@@ -61,10 +61,10 @@ class FunctionArgLocator
 
   AsciiValueProcessor charProcessor;
   int currentPositionInFullString;
-  int currentBracketLevel;
+  int currentParanthesesLevel;
   bool fullFunctionProcessed;
 
-  int closingBracketPosition;
+  int closingParanthesesPosition;
   std::vector<argInfo> arguments;
   argInfo currentArgInfo;
 };
