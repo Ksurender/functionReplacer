@@ -5,6 +5,7 @@ int myFunction(int arg1, int arg2)
 {
   int intermediate = arg1 + arg2;
   int anotherVal = arg1*arg2;
-  int functionVal = original(arg1 * arg2, funCall(arg2), funCall());
+  int functionVal = original(intermediate,
+                             anotherVal, arg1);
   return functionVal;
 }
