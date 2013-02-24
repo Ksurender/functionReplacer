@@ -45,7 +45,14 @@ void FunctionReplacer::performReplacements()
     }
   }
 
-  // Throw an exception if searchPosition reaches end of codeBeingProcessed
+  if(searchPosition != NOMATCHES) {
+    std::stringstream errorInfoBuilder;
+    errorInfoBuilder << "Error when finding and processing usages of "
+		     << setup.originalFunctionName << "." << std::endl;
+      
+    UnexpectedStringEndReachedException except(errorInfoBuilder.str());  
+    throw except;
+  }
 }
 
 void FunctionReplacer::processSingleUsage(size_t usagePosition)
