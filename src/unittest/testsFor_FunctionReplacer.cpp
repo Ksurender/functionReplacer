@@ -172,43 +172,30 @@ SUITE(FunctionReplacer_Suite)
 
     CHECK_EQUAL(testDef.expectedResultCode.c_str(), replaceResult.c_str());
   }
+
+  TEST(threeArgumentFunction_multiLine)
+  {
+    TestDefinition testDef = buildTestDefinition(5,5);
+
+    FunctionReplacer funcReplacer(testDef.functionReplacerSetup);
+    std::string replaceResult = 
+      funcReplacer.doReplace(testDef.originalCode);
+
+    CHECK_EQUAL(testDef.expectedResultCode.c_str(), replaceResult.c_str());
+  }
+
+  TEST(ExceptionThrownWhenNoClosingBracket)
+  {
+    std::string badCode("unsigned int block = vsort(doStuff + Joseph()");
+    FunctionReplacerSetup setup = {"vsort", 1, "changeIt(@1)"};
+    FunctionReplacer funcReplacer(setup);
+
+    CHECK_THROW(funcReplacer.doReplace(badCode), 
+		UnexpectedStringEndReachedException);
+  }
 }
-
-
-
 
 int main(int argn, char** argc)
 {
   return UnitTest::RunAllTests();
 }
-
-
-
-/*
-void test_doReplaceHarness()
-{
-  TestManager testManager("doReplace");
-  testManager.doStartAction();
-
-  for(unsigned int srcNum = 1; srcNum <= 5; srcNum++) {
-
-    for(unsigned int setupNum = 1; setupNum <= 7; setupNum++) {
-
-      TestDefinition testDef = buildTestDefinition(srcNum, setupNum);
-    
-      int testResult = test_doReplace(testDef);
-
-      if(testResult == 1) {
-	std::cout << "Source Number " << srcNum;
-	std::cout << " Setup Number " << setupNum << std::endl;
-	testManager.doFailAction();
-      } 
-    }
-  }
-  testManager.doPassAction();
-}
-
-*/
-
-
-
