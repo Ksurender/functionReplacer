@@ -217,6 +217,15 @@ SUITE(FunctionReplacer_Suite)
       CHECK_EQUAL(errorMessage.c_str(), except.what()); 
     }
   }
+
+  TEST(MoreThanNineArgumentsException)
+  {
+    std::string code("myFunction(inputArgument)");
+    FunctionReplacerSetup setup = {"myFunction", 10, "newFunction(@5)"};
+    FunctionReplacer funcReplacer(setup);
+
+    CHECK_THROW(funcReplacer.doReplace(code), MoreThanNineArgumentsException);
+  }
 }
 
 int main(int argn, char** argc)

@@ -12,6 +12,15 @@
 #include <vector>
 #include "FunctionArgLocator.h"
 
+class MoreThanNineArgumentsException : public std::exception
+{
+ public:
+  virtual const char* what() const throw()
+  {
+    return "FunctionReplacer is not designed to replace functions with more than 9 arguments";
+  }
+};
+
 class UnexpectedStringEndReachedException : public std::exception
 {
  public:

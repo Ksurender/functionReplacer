@@ -20,6 +20,11 @@ FunctionReplacerSetup FunctionReplacer::getSetup() const
 
 std::string FunctionReplacer::doReplace(std::string originalCode)
 {
+
+  if(setup.originalFunctionNumArgs > 9) {
+    MoreThanNineArgumentsException except;
+    throw except;    
+  }
   
   codeBeingProcessed = originalCode;
   performReplacements();
