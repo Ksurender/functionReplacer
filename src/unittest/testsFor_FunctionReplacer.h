@@ -1,6 +1,14 @@
 #ifndef TESTSFOR_FUNCTIONREPLACER_H
 #define TESTSFOR_FUNCTIONREPLACER_H
 
+#ifndef UNITTESTDIR_ABSPATH
+#error "UNITTESTDIR_ABSPATH needs to be defined when compiling testsFor_FunctionReplacer"
+#endif
+
+#define STR_EXPAND(tok) #tok 
+#define STR(tok) STR_EXPAND(tok)
+
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -59,7 +67,7 @@ FunctionReplacerSetup funReplacerSetup_7 = {
 };
 
 
-static std::string unitTestDir("/cygdrive/c/KS/mw/EDG_Projects/CGIR_643/functionReplacer/src/unittest/");
+static std::string unitTestDir(STR(UNITTESTDIR_ABSPATH));
 
 
 template <typename T>
