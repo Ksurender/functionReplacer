@@ -74,7 +74,7 @@ void FunctionReplacer::processSingleUsage(size_t usageStartPosition)
 FunctionArgLocator FunctionReplacer::getArgLocatorForUsage(size_t usageStartPosition)
 {
   FunctionArgLocator argLocator;
-  size_t argsPosition = getPositionAfterOpeningParantheses(usageStartPosition);
+  size_t argsPosition = getPositionAfterOpeningParentheses(usageStartPosition);
 
   while(argLocator.needsMore() && argsPosition < codeBeingProcessed.length()) {
     argLocator.feed(codeBeingProcessed[argsPosition]);
@@ -96,7 +96,7 @@ FunctionArgLocator FunctionReplacer::getArgLocatorForUsage(size_t usageStartPosi
   return(argLocator);
 }
 
-size_t FunctionReplacer::getPositionAfterOpeningParantheses(size_t usageStartPosition)
+size_t FunctionReplacer::getPositionAfterOpeningParentheses(size_t usageStartPosition)
 {
   return usageStartPosition + setup.originalFunctionName.length() + 1;
 }
@@ -109,7 +109,7 @@ void FunctionReplacer::replaceSingleUsage(const FunctionArgLocator &argLocator,
   argLocator.getLocatedArgs(locatedArgs);
   std::string replacementString = buildReplacementString(locatedArgs);
   size_t originalFunctionUsageLength = setup.originalFunctionName.length() + 1 + 
-                                       (1 + argLocator.getClosingParanthesesPos());
+                                       (1 + argLocator.getClosingParenthesesPos());
   codeBeingProcessed.replace(usageStartPosition, originalFunctionUsageLength, replacementString);
 }
 

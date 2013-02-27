@@ -32,9 +32,9 @@ SUITE(FunctionArgLocator_TestSuite)
     CHECK_EQUAL(false, argLocator.needsMore());
   }
 
-  TEST_FIXTURE(singleString_noArgs_fixture, singleString_noArgs_closingParanthesesPosition)
+  TEST_FIXTURE(singleString_noArgs_fixture, singleString_noArgs_closingParenthesesPosition)
   {
-    CHECK_EQUAL((unsigned int)0, argLocator.getClosingParanthesesPos());
+    CHECK_EQUAL((unsigned int)0, argLocator.getClosingParenthesesPos());
   }
 
   TEST_FIXTURE(singleString_noArgs_fixture, singleString_noArgs_locatedArguments)
@@ -53,7 +53,7 @@ SUITE(FunctionArgLocator_TestSuite)
     argLocator.getLocatedArgs(locatedArgs);
 
     CHECK_EQUAL(false, argLocator.needsMore());
-    CHECK_EQUAL((unsigned int)4, argLocator.getClosingParanthesesPos());
+    CHECK_EQUAL((unsigned int)4, argLocator.getClosingParenthesesPos());
     CHECK_EQUAL((unsigned int)1, locatedArgs.size());
     
     CHECK_EQUAL((unsigned int)0, locatedArgs[0].startPos);
@@ -70,7 +70,7 @@ SUITE(FunctionArgLocator_TestSuite)
     argLocator.getLocatedArgs(locatedArgs);
 
     CHECK_EQUAL(false, argLocator.needsMore());
-    CHECK_EQUAL((unsigned int)6, argLocator.getClosingParanthesesPos());
+    CHECK_EQUAL((unsigned int)6, argLocator.getClosingParenthesesPos());
     CHECK_EQUAL((unsigned int)1, locatedArgs.size());
     
     CHECK_EQUAL((unsigned int)0, locatedArgs[0].startPos);
@@ -78,7 +78,7 @@ SUITE(FunctionArgLocator_TestSuite)
     CHECK_EQUAL(" argN ", locatedArgs[0].arg.c_str());    
   }
 
-  TEST_FIXTURE(instantiateVarsOnly_fixture, singleString_oneArg_multiParanthesesed)
+  TEST_FIXTURE(instantiateVarsOnly_fixture, singleString_oneArg_multiParenthesesed)
   {
     functionString.assign("(int) generate(inputValue));");
     const char* pStartChar = functionString.c_str();
@@ -87,7 +87,7 @@ SUITE(FunctionArgLocator_TestSuite)
     argLocator.getLocatedArgs(locatedArgs);
 
     CHECK_EQUAL(false, argLocator.needsMore());
-    CHECK_EQUAL((unsigned int)26, argLocator.getClosingParanthesesPos());
+    CHECK_EQUAL((unsigned int)26, argLocator.getClosingParenthesesPos());
     CHECK_EQUAL((unsigned int)1, locatedArgs.size());
     
     CHECK_EQUAL((unsigned int)0, locatedArgs[0].startPos);
@@ -106,7 +106,7 @@ SUITE(FunctionArgLocator_TestSuite)
 
     CHECK_EQUAL(false, argLocator.needsMore());
     CHECK_EQUAL((unsigned int)2, locatedArgs.size());
-    CHECK_EQUAL((unsigned int)30, argLocator.getClosingParanthesesPos());
+    CHECK_EQUAL((unsigned int)30, argLocator.getClosingParenthesesPos());
 
     CHECK_EQUAL((unsigned int)0, locatedArgs[0].startPos);
     CHECK_EQUAL((unsigned int)13, locatedArgs[0].endPos);
@@ -132,7 +132,7 @@ SUITE(FunctionArgLocator_TestSuite)
 
     CHECK_EQUAL(false, argLocator.needsMore());
     CHECK_EQUAL((unsigned int)2, locatedArgs.size());
-    CHECK_EQUAL((unsigned int)30, argLocator.getClosingParanthesesPos());
+    CHECK_EQUAL((unsigned int)30, argLocator.getClosingParenthesesPos());
 
     CHECK_EQUAL((unsigned int)0, locatedArgs[0].startPos);
     CHECK_EQUAL((unsigned int)13, locatedArgs[0].endPos);
@@ -144,7 +144,7 @@ SUITE(FunctionArgLocator_TestSuite)
     
   }
 
-  TEST_FIXTURE(instantiateVarsOnly_fixture, singleString_twoArgs_multiParantheses_commas)
+  TEST_FIXTURE(instantiateVarsOnly_fixture, singleString_twoArgs_multiParentheses_commas)
   {
     functionString.assign("(myType) object->fun(var1, var2), UPOP(call(), fill))");
 
@@ -155,7 +155,7 @@ SUITE(FunctionArgLocator_TestSuite)
 
     CHECK_EQUAL(false, argLocator.needsMore());
     CHECK_EQUAL((unsigned int)2, locatedArgs.size());
-    CHECK_EQUAL((unsigned int)52, argLocator.getClosingParanthesesPos());
+    CHECK_EQUAL((unsigned int)52, argLocator.getClosingParenthesesPos());
 
     CHECK_EQUAL((unsigned int)0, locatedArgs[0].startPos);
     CHECK_EQUAL((unsigned int)31, locatedArgs[0].endPos);
@@ -166,7 +166,7 @@ SUITE(FunctionArgLocator_TestSuite)
     CHECK_EQUAL(" UPOP(call(), fill)", locatedArgs[1].arg.c_str());
   }
 
-  TEST_FIXTURE(instantiateVarsOnly_fixture, feedChars_twoArgs_multiParantheses_commas)
+  TEST_FIXTURE(instantiateVarsOnly_fixture, feedChars_twoArgs_multiParentheses_commas)
   {
     functionString.assign("(myType) object->fun(var1, var2), UPOP(call(), fill))");
 
@@ -182,7 +182,7 @@ SUITE(FunctionArgLocator_TestSuite)
 
     CHECK_EQUAL(false, argLocator.needsMore());
     CHECK_EQUAL((unsigned int)2, locatedArgs.size());
-    CHECK_EQUAL((unsigned int)52, argLocator.getClosingParanthesesPos());
+    CHECK_EQUAL((unsigned int)52, argLocator.getClosingParenthesesPos());
 
     CHECK_EQUAL((unsigned int)0, locatedArgs[0].startPos);
     CHECK_EQUAL((unsigned int)31, locatedArgs[0].endPos);

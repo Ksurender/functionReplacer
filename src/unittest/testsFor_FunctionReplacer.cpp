@@ -184,7 +184,7 @@ SUITE(FunctionReplacer_Suite)
     CHECK_EQUAL(testDef.expectedResultCode.c_str(), replaceResult.c_str());
   }
 
-  TEST(ExceptionThrownWhenNoClosingParantheses)
+  TEST(ExceptionThrownWhenNoClosingParentheses)
   {
     std::string badCode("unsigned int block = vsort(doStuff + Joseph()");
     FunctionReplacerSetup setup = {"vsort", 1, "changeIt(@1)"};
@@ -194,7 +194,7 @@ SUITE(FunctionReplacer_Suite)
 		UnexpectedStringEndReachedException);
   }
 
-  TEST(ExceptionThrownWhenNoClosingParantheses_errorMessage)
+  TEST(ExceptionThrownWhenNoClosingParentheses_errorMessage)
   {
     std::string badCode("unsigned int block = vsort(doStuff + Joseph()");
     FunctionReplacerSetup setup = {"vsort", 1, "changeIt(@1)"};

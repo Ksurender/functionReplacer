@@ -12,11 +12,11 @@ charType AsciiValueProcessor::process(char theChar)
   }
 
   if(theChar == OPENING_BRACKET) {
-    return charType_openingParantheses;
+    return charType_openingParentheses;
   }
 
   if(theChar == CLOSING_BRACKET) {
-    return charType_closingParantheses;
+    return charType_closingParentheses;
   }
 
   if(theChar == COMMA) {

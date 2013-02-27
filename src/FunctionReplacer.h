@@ -67,7 +67,7 @@ class FunctionReplacer
 
   void performReplacements();
   void processSingleUsage(size_t usageStartPosition);
-  size_t getPositionAfterOpeningParantheses(size_t usageStartPosition);
+  size_t getPositionAfterOpeningParentheses(size_t usageStartPosition);
   FunctionArgLocator getArgLocatorForUsage(size_t usagePosition);
   void replaceSingleUsage(const FunctionArgLocator &argLocator, size_t usagePosition);
   std::string buildReplacementString(const std::vector<argInfo> &args);
