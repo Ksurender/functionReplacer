@@ -86,8 +86,8 @@ FunctionArgLocator FunctionReplacer::getArgLocatorForUsage(size_t usageStartPosi
     errorInfoBuilder << "Error when locating arguments in usage of "
 		     << setup.originalFunctionName
                      << ".  This may have happened because a usage of the "
-                        "function may exist with an opening parantheses and no "
-                        "corresponding closing parantheses." << std::endl;
+                        "function may exist with an opening parentheses and no "
+                        "corresponding closing parentheses." << std::endl;
 
     UnexpectedStringEndReachedException except(errorInfoBuilder.str());  
     throw except;

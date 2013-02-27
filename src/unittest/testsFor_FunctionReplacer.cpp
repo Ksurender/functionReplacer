@@ -205,8 +205,8 @@ SUITE(FunctionReplacer_Suite)
     errorMessageBuilder << "Error when locating arguments in usage of ";
     errorMessageBuilder << setup.originalFunctionName;
     errorMessageBuilder << ".  This may have happened because a usage of the "
-                           "function may exist with an opening parantheses and no "
-                           "corresponding closing parantheses." << std::endl;
+                           "function may exist with an opening parentheses and no "
+                           "corresponding closing parentheses." << std::endl;
     std::string errorMessage(errorMessageBuilder.str());
 
     try {
