@@ -42,7 +42,7 @@ unittest/testsFor_FunctionReplacer : FunctionReplacer.o unittest/testsFor_Functi
 unittest/testsFor_FunctionArgLocator : FunctionArgLocator.o unittest/testsFor_FunctionArgLocator.o
 	$(COMPILER) $(COMPFLAGS) $(LINK_FLAGS) -o unittest/testsFor_FunctionArgLocator FunctionArgLocator.o CharProcessor.o unittest/testsFor_FunctionArgLocator.o $(TEST_LIBS)
 
-FunctionReplacer : FunctionReplacerFrontEnd.o FunctionReplacer.o unittest/testsFor_FunctionReplacer.o
+FunctionReplacer : FunctionReplacerFrontEnd.o FunctionReplacer.o
 	$(COMPILER) $(COMPFLAGS) $(LINK_FLAGS) -o FunctionReplacer FunctionReplacerFrontEnd.o FunctionReplacer.o FunctionArgLocator.o CharProcessor.o
 
 FunctionReplacerFrontEnd.o : FunctionReplacer.o FunctionArgLocator.o FunctionReplacerFrontEnd.cpp
