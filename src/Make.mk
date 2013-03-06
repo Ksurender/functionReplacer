@@ -55,14 +55,14 @@ unittest/testsFor_FunctionReplacer.o : unittest/testsFor_FunctionReplacer.cpp un
 	$(COMPILER) $(COMPFLAGS) $(UNITTESTDIR_DEFINE) -c -o unittest/testsFor_FunctionReplacer.o unittest/testsFor_FunctionReplacer.cpp
 
 clean :
-	rm FunctionReplacer.o
-	rm FunctionArgLocator.o
-	rm CharProcessor.o
-	rm unittest/testsFor_FunctionReplacer.o
-	rm unittest/testsFor_FunctionReplacer
-	rm unittest/testsFor_FunctionArgLocator.o
-	rm unittest/testsFor_FunctionArgLocator
-	rm FunctionReplacerFrontEnd.o
-	rm FunctionReplacer
+	rm -f FunctionReplacer.o
+	rm -f FunctionArgLocator.o
+	rm -f CharProcessor.o
+	rm -f unittest/testsFor_FunctionReplacer.o
+	rm -f unittest/testsFor_FunctionReplacer
+	rm -f unittest/testsFor_FunctionArgLocator.o
+	rm -f unittest/testsFor_FunctionArgLocator
+	rm -f FunctionReplacerFrontEnd.o
+	rm -f FunctionReplacer
 
 .PHONY : all clean
